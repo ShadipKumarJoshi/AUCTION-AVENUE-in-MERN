@@ -4,10 +4,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Product = require("../model/productModel");
 
+// Generate a token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
+// Register a new user
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -46,6 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// Login a user
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 

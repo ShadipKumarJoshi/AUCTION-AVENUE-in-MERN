@@ -4,10 +4,12 @@ const slugify = require("slugify");
 const BiddingProduct = require("../model/biddingProductModel");
 const cloudinary = require("cloudinary").v2;
 
+// Create a new product
 const createProduct = asyncHandler(async (req, res) => {
   const { title, description, price, category, height, lengthpic, width, mediumused, weigth } = req.body;
   const userId = req.user.id;
 
+  // Generate a unique slug for the product
   const originalSlug = slugify(title, {
     lower: true,
     remove: /[*+~.()'"!:@]/g,
@@ -22,11 +24,13 @@ const createProduct = asyncHandler(async (req, res) => {
     suffix++;
   }
 
+  // Check if all fields are filled
   if (!title || !description || !price) {
     res.status(400);
     throw new Error("Please fill in all fields");
   }
 
+  // Check if the user has uploaded an image
   let fileData = {};
   if (req.file) {
     let uploadedFile;
@@ -48,6 +52,7 @@ const createProduct = asyncHandler(async (req, res) => {
     };
   }
 
+  // Create the product
   const product = await Product.create({
     user: userId,
     title,
@@ -68,6 +73,7 @@ const createProduct = asyncHandler(async (req, res) => {
   });
 });
 
+// Get all products
 const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort("-createdAt").populate("user");
 
@@ -89,6 +95,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.status(200).json(productsWithDetails);
 });
 
+// Get all products of a user
 const getAllProductsofUser = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -108,6 +115,7 @@ const getAllProductsofUser = asyncHandler(async (req, res) => {
   res.status(200).json(productsWithPrices);
 });
 
+// Get all products that the user has won
 const getWonProducts = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -127,6 +135,7 @@ const getWonProducts = asyncHandler(async (req, res) => {
   res.status(200).json(productsWithPrices);
 });
 
+// Get all sold products
 const getAllSoldProducts = asyncHandler(async (req, res) => {
   const product = await Product.find({ isSoldout: true }).sort("-createdAt").populate("user");
   res.status(200).json(product);
@@ -148,11 +157,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Product not found");
   }
+
+  // Check if the user is the owner of the product
   if (product.user?.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
+
+  // Delete the image from Cloudinary
   if (product.image && product.image.public_id) {
     try {
       await cloudinary.uploader.destroy(product.image.public_id);
@@ -164,6 +177,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
   await Product.findByIdAndDelete(id);
   res.status(200).json({ message: "Product deleted." });
 });
+
+// Update a product
 const updateProduct = asyncHandler(async (req, res) => {
   const { title, description, price, height, lengthpic, width, mediumused, weigth } = req.body;
   const { id } = req.params;
@@ -178,6 +193,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
+  // Check if all fields are filled
   let fileData = {};
   if (req.file) {
     let uploadedFile;
@@ -190,7 +206,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       res.status(500);
       throw new Error("Image colud not be uploaded");
     }
-
+    // Delete the previous image from Cloudinary
     if (product.image && product.image.public_id) {
       try {
         await cloudinary.uploader.destroy(product.image.public_id);
@@ -207,6 +223,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     };
   }
 
+  // Update the product
   const updatedProduct = await Product.findByIdAndUpdate(
     { _id: id },
     {
@@ -247,6 +264,7 @@ const verifyAndAddCommissionProductByAmdin = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Product verified successfully", data: product });
 });
 
+// Get all products for admin
 const getAllProductsByAmdin = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort("-createdAt").populate("user");
 
