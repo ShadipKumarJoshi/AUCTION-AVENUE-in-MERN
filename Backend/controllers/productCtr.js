@@ -261,7 +261,7 @@ const verifyAndAddCommissionProductByAmdin = asyncHandler(async (req, res) => {
 
   await product.save();
 
-  res.status(200).json({ message: "Product verified successfully", data: product });
+  res.status(200).json({ message: "Product verified successfully.", data: product });
 });
 
 // Get all products for admin
