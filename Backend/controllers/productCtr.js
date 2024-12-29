@@ -140,7 +140,10 @@ const getAllSoldProducts = asyncHandler(async (req, res) => {
   const product = await Product.find({ isSoldout: true }).sort("-createdAt").populate("user");
   res.status(200).json(product);
 });
-const getProductBySlug = asyncHandler(async (req, res) => {
+
+// Get a product by slug
+// const getProductBySlug = asyncHandler(async (req, res) => {
+const getProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const product = await Product.findById(id);
   if (!product) {
@@ -149,6 +152,7 @@ const getProductBySlug = asyncHandler(async (req, res) => {
   }
   res.status(200).json(product);
 });
+
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const product = await Product.findById(id);
@@ -299,7 +303,8 @@ module.exports = {
   createProduct,
   getAllProducts,
   getWonProducts,
-  getProductBySlug,
+  // getProductBySlug,
+  getProduct,
   deleteProduct,
   updateProduct,
   verifyAndAddCommissionProductByAmdin,

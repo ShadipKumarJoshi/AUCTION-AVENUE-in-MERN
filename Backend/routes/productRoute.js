@@ -4,7 +4,8 @@ const {
   getAllProducts,
   deleteProduct,
   updateProduct,
-  getProductBySlug,
+  // getProductBySlug,
+  getProduct,
   getAllProductsByAmdin,
   deleteProductsByAmdin,
   getAllSoldProducts,
@@ -24,11 +25,12 @@ router.get("/", getAllProducts);
 router.get("/user", protect, getAllProductsofUser);
 router.get("/won-products", protect, getWonProducts);
 router.get("/sold", getAllSoldProducts);
-router.get("/:id", getProductBySlug);
+// router.get("/:id", getProductBySlug);
+router.get("/:id", getProduct);
 
 // Only access for admin users
 router.patch("/admin/product-verified/:id", protect, isAdmin, verifyAndAddCommissionProductByAmdin);
-router.get("/admin/products", protect, isAdmin, getAllProductsByAmdin);
+router.get("/admin/product", protect, isAdmin, getAllProductsByAmdin);
 router.delete("/admin/products", protect, isAdmin, deleteProductsByAmdin);
 
 module.exports = router;
