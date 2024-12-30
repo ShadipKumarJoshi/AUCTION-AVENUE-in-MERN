@@ -5,8 +5,8 @@ const createCategory = asyncHandler(async (req, res) => {
   try {
     const existingCategory = await Category.findOne({ title: req.body.title });
     if (existingCategory) {
-      res.status(400).json({ message: "Category with this title already exists" });
-      return;
+      return res.status(400).json({ message: "Category with this title already exists" });
+      
     }
     const category = await Category.create({
       user: req.user._id,
