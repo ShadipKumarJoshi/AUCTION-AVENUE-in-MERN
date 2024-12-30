@@ -40,6 +40,7 @@ const placeBid = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Your bid must be higher than the current highest bid");
     }
+  }
 
     const biddingProduct = await BiddingProduct.create({
       user: userId,
@@ -47,8 +48,8 @@ const placeBid = asyncHandler(async (req, res) => {
       price,
     });
 
-    res.status(201).json(biddingProduct);
-  }
+    res.status(200).json(biddingProduct);
+  
 });
 
 const getBiddingHistory = asyncHandler(async (req, res) => {

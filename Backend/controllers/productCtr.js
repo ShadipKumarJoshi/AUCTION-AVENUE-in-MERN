@@ -145,7 +145,7 @@ const getAllSoldProducts = asyncHandler(async (req, res) => {
 // const getProductBySlug = asyncHandler(async (req, res) => {
 const getProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate("user");
   if (!product) {
     res.status(404);
     throw new Error("Product not found");
